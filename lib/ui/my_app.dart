@@ -1,7 +1,10 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:synchronizing_directories/ui/main_view.dart';
 
+import '../core/key_store.dart';
+import '../provider/provider.dart';
 import '../settings/color/my_color.dart';
 import '../widget/custom_button.dart';
 
@@ -75,16 +78,31 @@ final closeButtonColors = WindowButtonColors(
   iconMouseOver: Colors.white,
 );
 
-class WindowButtons extends StatelessWidget {
+class WindowButtons extends ConsumerWidget {
   const WindowButtons({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
         MinimizeWindowButton(colors: buttonColors),
         MaximizeWindowButton(colors: buttonColors),
-        CloseWindowButton(colors: closeButtonColors),
+        CloseWindowButton(
+          colors: closeButtonColors,
+          onPressed: () {
+            // Сохраняем ширину и высоту окна для использования при перезапуске программы
+            final size = MediaQuery.of(context).size;
+            ref.read(storageProvider).set<double>(KeyStore.windowWidth, size.width);
+            ref.read(storageProvider).set<double>(KeyStore.windowHeight, size.height - 1.0);
+
+            // Получим и сохраним положение окна на экране монитора
+            final position = appWindow.position;
+            ref.read(storageProvider).set<double>(KeyStore.offsetX, position.dx);
+            ref.read(storageProvider).set<double>(KeyStore.offsetY, position.dy);
+
+            appWindow.close();
+          },
+        ),
       ],
     );
   }

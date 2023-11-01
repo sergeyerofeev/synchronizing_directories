@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:io/io.dart';
-import 'package:synchronizing_directories/core/key_store.dart';
-import 'package:synchronizing_directories/provider/provider.dart';
 import 'package:synchronizing_directories/settings/color/my_color.dart';
 
 import '../provider/state_notifier_provider.dart';
@@ -21,11 +19,6 @@ class SynchronizeButton extends ConsumerWidget {
         minimumSize: const Size(220, 40),
       ),
       onPressed: () async {
-        // Сохраняем ширину и высоту окна для использования при перезапуске программы
-        final size = MediaQuery.of(context).size;
-        ref.read(storageProvider).set<double>(KeyStore.windowWidth, size.width);
-        ref.read(storageProvider).set<double>(KeyStore.windowHeight, size.height);
-
         // Получим из таблицы все отмеченные записи
         final allSelectedFolder = ref
             .read(folderNotifierProvider)
