@@ -63,7 +63,7 @@ class SynchronizeButton extends ConsumerWidget {
           }
         }
       },
-      child: Text('Выполнить синхронизацию'),
+      child: const Text('Выполнить синхронизацию'),
     );
   }
 }

@@ -1,18 +1,20 @@
 import 'dart:convert';
 
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:synchronizing_directories/core/key_store.dart';
-import 'package:synchronizing_directories/provider/provider.dart';
-import 'package:synchronizing_directories/provider/state_notifier_provider.dart';
+import 'package:window_manager/window_manager.dart';
 
+import 'core/key_store.dart';
 import 'data/data_sources/storage.dart';
+import 'provider/provider.dart';
+import 'provider/state_notifier_provider.dart';
 import 'ui/my_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
   final sharedPreferences = await SharedPreferences.getInstance();
   // Извлекаем из хранилища положение окна на экране монитора
   final double? dx = sharedPreferences.getDouble(KeyStore.offsetX);
@@ -26,6 +28,28 @@ Future<void> main() async {
   if (rawData != null && rawData.isNotEmpty) {
     dataTable = rawData.map((entry) => jsonDecode(entry)).cast<Map<String, dynamic>>().toList();
   }
+
+  WindowOptions windowOptions = WindowOptions(
+    size: Size(windowWidth ?? 780, windowHeight ?? 450),
+    minimumSize: const Size(780, 450),
+    // Запрещаем изменять размеры окна
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.hidden, // Скрыть панель с кнопками Windows
+  );
+
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    // Начальное положение окна
+    if (dx == null || dy == null) {
+      // Если пользователь не выбрал положение окна на экране монитора, размещаем по центру
+      await windowManager.center();
+    } else {
+      await windowManager.setPosition(Offset(dx, dy));
+    }
+    // await windowManager.setAlwaysOnTop(true); // Размещаем приложение поверх других окон
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   runApp(ProviderScope(
     overrides: [
       // Устанавливаем новые объекты
@@ -34,22 +58,4 @@ Future<void> main() async {
     ],
     child: const MyApp(),
   ));
-
-  doWhenWindowReady(() {
-    final win = appWindow;
-
-    win.minSize = const Size(780, 450);
-    win.size = Size(windowWidth ?? 780, windowHeight ?? 450);
-
-    // Выполняем строго после установки размеров окна
-    if (dx == null || dy == null) {
-      // Если пользователь не выбрал положение окна на экране монитора, размещаем по центру
-      win.alignment = Alignment.center;
-    } else {
-      win.position = Offset(dx, dy);
-    }
-
-    win.title = "Приложение для синхронизации директорий";
-    win.show();
-  });
 }

@@ -2,11 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:synchronizing_directories/core/key_store.dart';
-import 'package:synchronizing_directories/provider/provider.dart';
-import 'package:synchronizing_directories/provider/state_notifier_provider.dart';
-import 'package:synchronizing_directories/settings/color/my_color.dart';
-import 'package:synchronizing_directories/settings/text.dart';
+
+import '../core/key_store.dart';
+import '../provider/provider.dart';
+import '../provider/state_notifier_provider.dart';
+import '../settings/color/my_color.dart';
+import '../settings/text.dart';
 
 class CustomTable extends ConsumerWidget {
   const CustomTable({Key? key}) : super(key: key);
@@ -66,10 +67,7 @@ class CustomTable extends ConsumerWidget {
               DataCell(
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 5.0),
-                    child: MyText.textCell(folder['source']),
-                  ),
+                  child: MyText.textCell(folder['source']),
                 ),
                 onTap: () async {
                   String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
