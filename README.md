@@ -3,9 +3,8 @@
 #### Программа для синхронизиции директорий
 
 <p align="center">
-    <img src="git_image/image.png" width="780" height="450">
+    <img src="git_image/image.png" style='height: 780; width: 450; object-fit: contain'>
 </p>
-
 
 #### Описание
 Приложение для операционной системы Windows.  
