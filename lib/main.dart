@@ -32,8 +32,8 @@ Future<void> main() async {
   WindowOptions windowOptions = WindowOptions(
     size: Size(windowWidth ?? 780, windowHeight ?? 450),
     minimumSize: const Size(780, 450),
-    // Запрещаем изменять размеры окна
     skipTaskbar: false,
+    title: 'Синхронизация директорий',
     titleBarStyle: TitleBarStyle.hidden, // Скрыть панель с кнопками Windows
   );
 

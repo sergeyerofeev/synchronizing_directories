@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         decoration: BoxDecoration(
           color: Color(0xFFF5F5F5),
           image: DecorationImage(
-            image: Svg('assets/background6.svg'),
+            image: Svg('assets/background5.svg'),
             fit: BoxFit.cover,
           ),
         ),

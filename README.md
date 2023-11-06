@@ -3,7 +3,7 @@
 #### Программа для синхронизиции директорий
 
 <p align="center">
-    <img src="assets/1.svg" width="900" height="400">
+    <img src="git_image/image.png" width="780" height="450">
 </p>
 
 
