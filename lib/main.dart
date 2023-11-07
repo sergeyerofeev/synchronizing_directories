@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_single_instance/flutter_single_instance.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -13,6 +15,11 @@ import 'ui/my_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Создаём только один экземпляр приложения
+  if (!await FlutterSingleInstance.platform.isFirstInstance()) {
+    exit(0);
+  }
+
   await windowManager.ensureInitialized();
 
   final sharedPreferences = await SharedPreferences.getInstance();
