@@ -49,15 +49,28 @@ class DraggebleAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     onPressed: () async {
                       // Сохраняем ширину и высоту окна для использования при перезапуске программы
                       final size = await windowManager.getSize();
-                      await ref.read(storageProvider).set<double>(KeyStore.windowWidth, size.width);
-                      await ref
-                          .read(storageProvider)
-                          .set<double>(KeyStore.windowHeight, size.height);
+                      final width = await ref.read(storageProvider).get<double>(KeyStore.windowWidth);
+                      final height = await ref.read(storageProvider).get<double>(KeyStore.windowHeight);
+                      // Сохраняем, только если значения изменились
+                      if (width != size.width) {
+                        await ref.read(storageProvider).set<double>(KeyStore.windowWidth, size.width);
+                      }
+                      if (height != size.height) {
+                        await ref.read(storageProvider).set<double>(KeyStore.windowHeight, size.height);
+                      }
 
                       // Получим и сохраним положение окна на экране монитора
                       final position = await windowManager.getPosition();
-                      await ref.read(storageProvider).set<double>(KeyStore.offsetX, position.dx);
-                      await ref.read(storageProvider).set<double>(KeyStore.offsetY, position.dy);
+                      final dx = await ref.read(storageProvider).get<double>(KeyStore.offsetX);
+                      final dy = await ref.read(storageProvider).get<double>(KeyStore.offsetY);
+                      // Сохраняем, только если значения изменились
+                      if (dx != position.dx) {
+                        await ref.read(storageProvider).set<double>(KeyStore.offsetX, position.dx);
+                      }
+                      if (dy != position.dy) {
+                        await ref.read(storageProvider).set<double>(KeyStore.offsetY, position.dy);
+                      }
+
                       await windowManager.close();
                     },
                   ),
