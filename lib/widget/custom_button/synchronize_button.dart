@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:io/io.dart';
-import 'package:synchronizing_directories/settings/color/my_color.dart';
 
-import '../provider/state_notifier_provider.dart';
+import '../../provider/state_notifier_provider.dart';
+import '../../settings/color/my_color.dart';
 
 class SynchronizeButton extends ConsumerWidget {
   const SynchronizeButton({super.key});
@@ -20,10 +20,8 @@ class SynchronizeButton extends ConsumerWidget {
       ),
       onPressed: () async {
         // Получим из таблицы все отмеченные записи
-        final allSelectedFolder = ref
-            .read(folderNotifierProvider)
-            .where((element) => element['selected'] == true)
-            .toList();
+        final allSelectedFolder =
+            ref.read(folderNotifierProvider).where((element) => element['selected'] == true).toList();
         // Обрабатываем каждую выбранную запись из allSelectedForlder
         for (Map<String, dynamic> entry in allSelectedFolder) {
           // Получаем все папки и файлы в переданной директории
@@ -64,32 +62,6 @@ class SynchronizeButton extends ConsumerWidget {
         }
       },
       child: const Text('Выполнить синхронизацию'),
-    );
-  }
-}
-
-class AddFolderButton extends ConsumerWidget {
-  const AddFolderButton({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: MyColor.colorOfControls,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        minimumSize: const Size(40, 40),
-        padding: EdgeInsets.zero,
-      ),
-      onPressed: () {
-        // Проверим последнюю запись в списке
-        final lastEntry = ref.read(folderNotifierProvider).last;
-        if (lastEntry['source'] != null && lastEntry['destination'] != null) {
-          // Если поля source и destination не равны null, добавляем новую запись
-          final map = <String, dynamic>{'selected': false, 'source': null, 'destination': null};
-          ref.read(folderNotifierProvider.notifier).addEntry(map);
-        }
-      },
-      child: const Icon(Icons.add, size: 25),
     );
   }
 }

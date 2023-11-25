@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 import '../settings/color/my_color.dart';
-import '../widget/custom_button.dart';
+import '../widget/custom_button/add_folder_button.dart';
+import '../widget/custom_button/synchronize_button.dart';
 import '../widget/draggeble_app_bar.dart';
 import 'main_view.dart';
 
