@@ -17,11 +17,16 @@ class AddFolderButton extends ConsumerWidget {
         padding: EdgeInsets.zero,
       ),
       onPressed: () {
+        final map = <String, dynamic>{'selected': false, 'source': null, 'destination': null};
+        // Проверим, если таблица пустая, запишем в неё начальную строку
+        if (ref.read(folderNotifierProvider).isEmpty) {
+          ref.read(folderNotifierProvider.notifier).addEntry(map);
+          return;
+        }
         // Проверим последнюю запись в списке
         final lastEntry = ref.read(folderNotifierProvider).last;
         if (lastEntry['source'] != null && lastEntry['destination'] != null) {
           // Если поля source и destination не равны null, добавляем новую запись
-          final map = <String, dynamic>{'selected': false, 'source': null, 'destination': null};
           ref.read(folderNotifierProvider.notifier).addEntry(map);
         }
       },
