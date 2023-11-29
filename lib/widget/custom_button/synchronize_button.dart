@@ -50,6 +50,8 @@ class SynchronizeButton extends ConsumerWidget {
               ),
             ),
           );
+          // Если копирование производилось установим флаг в true
+          bool copyFlag = false;
           // Обрабатываем каждую выбранную запись из allSelectedForlder
           for (Map<String, dynamic> entry in allSelectedFolder) {
             // Получаем все папки и файлы в переданной директории
@@ -62,10 +64,9 @@ class SynchronizeButton extends ConsumerWidget {
                 // Добавим полученный путь к директории назначения
                 final path = '${entry['destination']}\\$name';
                 final checkDirectoryExistence = await Directory(path).exists();
-                if (checkDirectoryExistence) {
-                  print('Directory: $name is exists');
-                } else {
-                  print('Directory: $name is not exists');
+                if (!checkDirectoryExistence) {
+                  copyFlag = true;
+                  // Создадим директорию, т. к. в папке назначения она не существует
                   await copyPath(file.path, path);
                 }
               } else if (file.statSync().type == FileSystemEntityType.file) {
@@ -75,14 +76,15 @@ class SynchronizeButton extends ConsumerWidget {
                 File destinationFile = File(path);
                 final checkFileExistence = await destinationFile.exists();
                 if (checkFileExistence) {
-                  print('Directory: $name is exists');
+                  // Файл сушествует в папке назначения, проверяем у него дату модификации
                   final sourceStat = await sourceFile.stat();
                   final destinationStat = await destinationFile.stat();
                   if (sourceStat.modified.difference(destinationStat.modified).inMinutes > 0) {
                     await sourceFile.copy(path);
                   }
                 } else {
-                  print('Directory: $name is not exists');
+                  copyFlag = true;
+                  // Файл не существует, копируем
                   await sourceFile.copy(path);
                 }
               }
@@ -94,9 +96,17 @@ class SynchronizeButton extends ConsumerWidget {
             showDialog(
               context: context,
               barrierDismissible: true,
-              builder: (_) => const AlertDialog(
-                title: Text('Синхронизация успешно завершена', style: MyStyle.alertDialogStyle),
-              ),
+              builder: (_) {
+                if (copyFlag) {
+                  return const AlertDialog(
+                    title: Text('Синхронизация успешно завершена', style: MyStyle.alertDialogStyle),
+                  );
+                } else {
+                  return const AlertDialog(
+                    title: Text('Синхронизация не требуется', style: MyStyle.alertDialogStyle),
+                  );
+                }
+              },
             );
           });
         }
